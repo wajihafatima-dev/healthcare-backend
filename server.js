@@ -9,6 +9,7 @@ import doctorRoutes from "./routes/doctorRoute.js"
 import pharmacyRoutes from "./routes/pharmacyRoute.js";
 import staffRoutes from "./routes/staffRoute.js";
 import notificationRoutes from "./routes/notificationRoute.js";
+import { adminOnly, protect } from "./middleware/authMiddleware.js";
 
 dotenv.config();
 connectDB();
@@ -22,7 +23,7 @@ app.get("/", (req, res) => res.send("HealthSync Backend Running"));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/patients", patientRoutes);
-app.use("/api/appointments", appointmentRoutes);
+app.use("/api/appointments", protect, adminOnly, appointmentRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/pharmacy", pharmacyRoutes);
 app.use("/api/staffs", staffRoutes);

@@ -1,80 +1,81 @@
-import asyncHandler from "express-async-handler";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 import User from "../models/UserModel.js";
 
+// ✅ Function to generate JWT token
+const generateToken = (user) => {
+  return jwt.sign(
+    { id: user._id, role: user.role }, // token payload
+    process.env.JWT_SECRET, // secret key
+    { expiresIn: "7d" } // expiry
+  );
+};
 
-/**
- * @route  POST /api/auth/signup
- * @desc   Register new user (default role: staff). If correct ADMIN_CODE provided, role can be 'admin'
- * @body   { name, email, password, adminCode? }
- */
-export const signup = asyncHandler(async (req, res) => {
-  const { name, email, password, adminCode } = req.body;
-  if (!name || !email || !password) {
-    res.status(400);
-    throw new Error("Please provide name, email and password");
+// ✅ Signup
+export const signup = async (req, res) => {
+  try {
+    const { name, email, password, role } = req.body;
+
+    // check if user exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser)
+      return res.status(400).json({ message: "User already exists" });
+
+    // hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // create user
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      role: role || "staff", // default role
+    });
+
+    // generate token
+    const token = generateToken(user);
+
+    res.status(201).json({
+      message: "Signup successful",
+      token, // ✅ send token to frontend
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
+};
 
-  const existing = await User.findOne({ email });
-  if (existing) {
-    res.status(400);
-    throw new Error("Email already in use");
+// ✅ Login
+export const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      return res.status(400).json({ message: "Invalid credentials" });
+
+    // generate token
+    const token = generateToken(user);
+
+    res.status(200).json({
+      message: "Login successful",
+      token, // ✅ send token to frontend
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-
-  const salt = await bcrypt.genSalt(10);
-  const hashed = await bcrypt.hash(password, salt);
-
-  // Default role "staff". If adminCode matches env ADMIN_CODE, allow admin role.
-  let role = "staff";
-  if (adminCode && process.env.ADMIN_CODE && adminCode === process.env.ADMIN_CODE) {
-    role = "admin";
-  }
-
-  const user = await User.create({ name, email, password: hashed, role });
-  res.status(201).json({
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    token: generateToken(user._id),
-  });
-});
-
-/**
- * @route  POST /api/auth/login
- * @desc   Authenticate user and return token
- * @body   { email, password }
- */
-export const login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    res.status(400);
-    throw new Error("Please provide email and password");
-  }
-
-  const user = await User.findOne({ email });
-  if (!user) {
-    res.status(401);
-    throw new Error("Invalid credentials");
-  }
-
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    res.status(401);
-    throw new Error("Invalid credentials");
-  }
-
-  res.json({
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    token: generateToken(user._id),
-  });
-});
-
-// Helper: create JWT
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
