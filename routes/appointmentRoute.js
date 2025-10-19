@@ -8,9 +8,10 @@ import {
 } from "../controllers/appointmentController.js";
 import { adminOnly, protect, staffOrAdmin } from "../middleware/authMiddleware.js";
 
+const router = express.Router();
 
 router.get("/",protect, staffOrAdmin, getAllAppointments);
-router.get("/:id",protect, staffOrAdmin, getAppointmentById);
+router.get("/:id", protect,staffOrAdmin, getAppointmentById);
 
 // Admin-only 
 router.post("/", protect, adminOnly, createAppointment);
