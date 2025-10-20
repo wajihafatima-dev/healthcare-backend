@@ -6,16 +6,14 @@ import {
   updateAppointment,
   deleteAppointment,
 } from "../controllers/appointmentController.js";
-import { adminOnly, protect, staffOrAdmin } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/",protect, staffOrAdmin, getAllAppointments);
-router.get("/:id", protect,staffOrAdmin, getAppointmentById);
+router.get("/", getAllAppointments);
+router.get("/:id", getAppointmentById);
 
-// Admin-only 
-router.post("/", protect, adminOnly, createAppointment);
-router.put("/:id", protect, adminOnly, updateAppointment);
-router.delete("/:id", protect, adminOnly, deleteAppointment);
+router.post("/", createAppointment);
+router.put("/:id", updateAppointment);
+router.delete("/:id", deleteAppointment);
 
 export default router;

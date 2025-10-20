@@ -38,12 +38,10 @@ export const signup = async (req, res) => {
     res.status(201).json({
       message: "Signup successful",
       token, // ✅ send token to frontend
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -68,12 +66,10 @@ export const login = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token, // ✅ send token to frontend
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
