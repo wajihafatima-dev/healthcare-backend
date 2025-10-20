@@ -9,10 +9,10 @@ import {
 
 const router = express.Router();
 
-router.post("/", createDoctor);        // ➕ Add doctor
-router.get("/", getDoctors);           // 📋 Get all doctors
-router.get("/:id", getDoctorById);     // 🔍 Get single doctor
-router.put("/:id", updateDoctor);      // ✏️ Update doctor info
-router.delete("/:id", deleteDoctor);   // 🗑️ Remove doctor
+router.post("/", createDoctor);        
+router.get("/", getDoctors);           
+router.get("/:id", getDoctorById);     
+router.put("/:id", updateDoctor);      
+router.delete("/:id", deleteDoctor);   
 
 export default router;
