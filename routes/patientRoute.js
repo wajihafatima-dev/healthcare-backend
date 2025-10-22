@@ -6,13 +6,14 @@ import {
   updatePatient,
   deletePatient,
 } from "../controllers/patientController.js";
+import { verifyToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", createPatient);
-router.get("/", getAllPatients);
-router.get("/:id", getPatientById);
-router.put("/:id", updatePatient);
-router.delete("/:id", deletePatient);
+router.post("/", verifyToken,createPatient);
+router.get("/",verifyToken, getAllPatients);
+router.get("/:id",verifyToken, getPatientById);
+router.put("/:id",verifyToken,updatePatient);
+router.delete("/:id",verifyToken, deletePatient);
 
 export default router;

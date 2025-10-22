@@ -6,14 +6,15 @@ import {
   updateAppointment,
   deleteAppointment,
 } from "../controllers/appointmentController.js";
+import { verifyToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", getAllAppointments);
-router.get("/:id", getAppointmentById);
+router.get("/", verifyToken,getAllAppointments);
+router.get("/:id",verifyToken, getAppointmentById);
 
-router.post("/", createAppointment);
-router.put("/:id", updateAppointment);
-router.delete("/:id", deleteAppointment);
+router.post("/",verifyToken, createAppointment);
+router.put("/:id", verifyToken,updateAppointment);
+router.delete("/:id",verifyToken,deleteAppointment);
 
 export default router;
