@@ -22,7 +22,7 @@ app.use(
       "http://localhost:3000",          // local dev frontend
       "https://your-frontend.vercel.app", // apne frontend ka deployed domain
     ],
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
