@@ -3,6 +3,7 @@ import { verifyToken, isAdmin, isStaff } from "../middleware/authMiddleware.js";
 import { deleteUser, getAllUsers, getUserById, updateUser } from "../controllers/userController.js";
 
 const router = express.Router();
+
 router.get("/", verifyToken, isAdmin, getAllUsers);
 
 router.get("/admin", verifyToken, isAdmin, (req, res) => {

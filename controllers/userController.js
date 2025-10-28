@@ -19,29 +19,22 @@ export const getUserById = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    if (req.user.role !== "admin" && req.user._id.toString() !== req.params.id) {
-      return res.status(403).json({ message: "Access denied" });
-    }
-
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    Object.assign(user, req.body);
-    const updatedUser = await user.save();
-    res.json({ message: "User updated", user: updatedUser });
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true } 
+    );
+    if (!updatedUser) return res.status(404).json({ message: "User not found" });
+    res.json(updatedUser);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
-
 export const deleteUser = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    await user.deleteOne();
-    res.json({ message: "User deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+ try {
+     await User.findByIdAndDelete(req.params.id);
+     res.json({ message: "User deleted successfully" });
+   } catch (error) {
+     res.status(500).json({ message: error.message });
+   }
 };
