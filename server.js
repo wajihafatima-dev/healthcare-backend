@@ -16,20 +16,19 @@ dotenv.config();
 connectDB();
 
 const app = express();
-app.use(express.json());
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",         
+      "http://localhost:3000",          
       "https://your-frontend.vercel.app", 
     ],
-    methods: ["GET", "POST", "PUT", "DELETE","OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
-app.options("*", cors());
+app.use(express.json());
 
-app.get("/", (req, res) => res.send("Backend Running"));
+app.get("/", (req, res) => res.send(" Backend Running"));
 
 app.use("/api/users", userRoutes);
 
