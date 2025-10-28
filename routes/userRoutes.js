@@ -4,7 +4,7 @@ import { deleteUser, getAllUsers, getUserById, updateUser } from "../controllers
 
 const router = express.Router();
 
-router.get("/", verifyToken, isAdmin, getAllUsers);
+router.get("/", verifyToken, getAllUsers);
 
 router.get("/admin", verifyToken, isAdmin, (req, res) => {
   res.json({ message: "Welcome Admin Dashboard", user: req.user });
@@ -15,5 +15,5 @@ router.get("/staff", verifyToken, isStaff, (req, res) => {
 });
 router.get("/:id", verifyToken, getUserById);
 router.put("/:id", verifyToken, updateUser);
-router.delete("/:id", verifyToken, isAdmin, deleteUser);
+router.delete("/:id", verifyToken, deleteUser);
 export default router;
