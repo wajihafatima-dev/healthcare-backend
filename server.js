@@ -16,19 +16,20 @@ dotenv.config();
 connectDB();
 
 const app = express();
+app.use(express.json());
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",          // local dev frontend
-      "https://your-frontend.vercel.app", // apne frontend ka deployed domain
+      "http://localhost:3000",         
+      "https://your-frontend.vercel.app", 
     ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE","OPTIONS"],
     credentials: true,
   })
 );
-app.use(express.json());
+app.options("*", cors());
 
-app.get("/", (req, res) => res.send("HealthSync Backend Running"));
+app.get("/", (req, res) => res.send("Backend Running"));
 
 app.use("/api/users", userRoutes);
 
