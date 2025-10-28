@@ -1,8 +1,9 @@
 import express from "express";
 import { verifyToken, isAdmin, isStaff } from "../middleware/authMiddleware.js";
-import { deleteUser, getUserById, updateUser } from "../controllers/userController.js";
+import { deleteUser, getAllUsers, getUserById, updateUser } from "../controllers/userController.js";
 
 const router = express.Router();
+router.get("/", verifyToken, isAdmin, getAllUsers);
 
 router.get("/admin", verifyToken, isAdmin, (req, res) => {
   res.json({ message: "Welcome Admin Dashboard", user: req.user });
